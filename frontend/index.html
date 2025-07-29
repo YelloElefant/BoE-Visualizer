@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BOE Visualiser</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-button" onclick="goBack()">Back</button>
+      <h1>Paper Title</h1>
+      <div class="button-container">
+        <button class="arrow-button" onclick="alert('Left button clicked!')">
+          &larr;
+        </button>
+        <canvas id="myChart"></canvas>
+        <button class="arrow-button" onclick="alert('Right button clicked!')">
+          &rarr;
+        </button>
+      </div>
+      <div class="button-container top-bottom-buttons">
+        <button class="arrow-button" onclick="alert('Top button clicked!')">
+          &uarr;
+        </button>
+      </div>
+      <div class="button-container top-bottom-buttons bottom-buttons">
+        <button class="arrow-button" onclick="alert('Bottom button clicked!')">
+          &darr;
+        </button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
