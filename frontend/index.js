@@ -49,5 +49,5 @@ const myChart = new Chart(ctx, {
 });
 
 function goBack() {
-  alert("Back button clicked!");
+  window.location.href = "input.html";
 }
