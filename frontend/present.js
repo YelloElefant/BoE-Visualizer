@@ -40,6 +40,8 @@ const myChart = new Chart(ctx, {
     ],
   },
   options: {
+    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
@@ -49,5 +51,5 @@ const myChart = new Chart(ctx, {
 });
 
 function goBack() {
-  window.location.href = "input.html";
+  window.location.href = "home.html";
 }

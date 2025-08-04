@@ -41,3 +41,20 @@ textarea {
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+.back-button:hover {
+  background-color: #5a6268;
+}

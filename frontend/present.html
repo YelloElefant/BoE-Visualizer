@@ -4,23 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BOE Visualiser</title>
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="present.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="container">
       <button class="back-button" onclick="goBack()">Back</button>
       <h1>Paper Title</h1>
-      <div class="button-container">
-        <button class="arrow-button" onclick="alert('Left button clicked!')">
-          &larr;
-        </button>
-        <canvas id="myChart"></canvas>
-        <button class="arrow-button" onclick="alert('Right button clicked!')">
-          &rarr;
-        </button>
-      </div>
-      <div class="button-container top-bottom-buttons">
+
+      <button
+        class="arrow-button arrow-left"
+        onclick="alert('Left button clicked!')"
+      >
+        &larr;
+      </button>
+
+      <canvas id="myChart"></canvas>
+
+      <button
+        class="arrow-button arrow-right"
+        onclick="alert('Right button clicked!')"
+      >
+        &rarr;
+      </button>
+
+      <div class="button-container top-bottom-buttons top">
         <button class="arrow-button" onclick="alert('Top button clicked!')">
           &uarr;
         </button>
@@ -31,6 +39,6 @@
         </button>
       </div>
     </div>
-    <script src="index.js"></script>
+    <script src="present.js"></script>
   </body>
 </html>

@@ -4,10 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enter CSV Data</title>
-    <link rel="stylesheet" href="input.css" />
+    <link rel="stylesheet" href="upload.css" />
   </head>
   <body>
     <div class="container">
+      <button class="back-button" onclick="goBack()">Back</button>
+
       <h1>Enter CSV Data</h1>
       <textarea
         id="csvInput"
@@ -18,6 +20,6 @@
       <br />
       <button class="submit-button" onclick="submitCsv()">Submit</button>
     </div>
-    <script src="input.js"></script>
+    <script src="upload.js"></script>
   </body>
 </html>
