@@ -33,8 +33,8 @@ const myChart = new Chart(ctx, {
       {
         label: "Sample Data",
         data: values,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "#b0bfffff",
+        borderColor: "#3a56d4",
         borderWidth: 1,
       },
     ],
