@@ -19,11 +19,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 try {
     // Get the paper code from GET request
-    $paperCode = $_GET['paperCode'] ?? '';
+    // Support both formats: ?paperCode=VALUE and ?VALUE (direct parameter)
+    $paperCode = '';
+    
+    if (isset($_GET['paperCode']) && !empty($_GET['paperCode'])) {
+        // Standard format: ?paperCode=COMPX123-22A%20(HAM)
+        $paperCode = $_GET['paperCode'];
+    } else {
+        // Direct format: ?COMPX123-22A%20(HAM) - get the first parameter key
+        $queryParams = $_GET;
+        if (!empty($queryParams)) {
+            $paperCode = array_keys($queryParams)[0];
+        }
+    }
 
     // Validate input
     if (empty($paperCode)) {
-        throw new Exception('Paper code is required');
+        throw new Exception('Paper code is required. Use ?paperCode=VALUE or ?VALUE format');
     }
 
     // Sanitize paper code for filename (same as upload.php)
