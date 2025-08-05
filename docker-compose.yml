@@ -8,3 +8,21 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/default.conf
       - ./frontend:/var/www/html
+      - ./backend:/var/www/html/api
+    networks:
+      - internal
+
+  php:
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    volumes:
+      - ./frontend:/var/www/html
+      - ./backend:/var/www/html/api
+      - ./data:/var/www/data 
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
