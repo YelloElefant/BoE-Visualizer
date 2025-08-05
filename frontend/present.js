@@ -1,77 +1,58 @@
-// Sample datasets
-const datasets = {
-  sample1: {
-    csv: `Category,Value
-A,30
-B,50
-C,20
-D,80
-E,60`,
-    title: "Sample Data 1",
-  },
-  sample2: {
-    csv: `Category,Value
-Red,45
-Green,75
-Blue,30
-Yellow,60
-Purple,25`,
-    title: "Sample Data 2",
-  },
-  sample3: {
-    csv: `Category,Value
-January,120
-February,85
-March,110
-April,95
-May,130`,
-    title: "Sample Data 3",
-  },
-  sample4: {
-    csv: `Category,Value
-North,42
-South,68
-East,55
-West,37
-Central,61`,
-    title: "Sample Data 4",
-  },
-};
-
-let currentDataset = "sample1";
+let paperList = [];
+let currentPaperCode = null;
 let myChart;
 
-// Parse CSV data
+// Parse CSV data (finds the first column as label, last numeric column as value)
 function parseCSV(data) {
   const lines = data.trim().split("\n");
-  const headers = lines[0].split(",");
-  const labels = [];
-  const values = [];
+  if (lines.length < 2) return { labels: [], values: [] };
+  console.log(data)
+  // Support both quoted and unquoted CSV
+  const headers = lines[0].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
 
+  // Exclude columns that are names, id, email, timestamp, or 'Last downloaded from this paper' (handle quotes and whitespace)
+  const exclude = /^"?(first name|last name|ID number|email address|timestamp|last downloaded from this paper)"?\s*$/i;
+
+  // converts the headers to a object of headername and its index then filter for the ones we want
+  const firstDataRow = lines[1].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+  console.log(headers)
+  const assessmentCols = headers
+    .map((h, i) => ({ h, i }))
+    .filter(obj => {
+      if (exclude.test(obj.h)) return false;
+      const val = parseFloat(firstDataRow[obj.i]?.replace(/"/g, ''));
+      return !isNaN(val);
+    });
+
+  // parse the rest of the rows and sum the values for each assessment column
+  if (assessmentCols.length === 0) return { labels: [], values: [] };
+  const sums = Array(assessmentCols.length).fill(0);
+  let count = 0;
   for (let i = 1; i < lines.length; i++) {
-    const row = lines[i].split(",");
-    labels.push(row[0]);
-    values.push(parseFloat(row[1]));
+    const row = lines[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    if (row.length < headers.length) continue;
+    assessmentCols.forEach((col, idx) => {
+      const val = parseFloat(row[col.i].replace(/"/g, ''));
+      if (!isNaN(val)) sums[idx] += val;
+    });
+    count++;
   }
 
+  const labels = assessmentCols.map(col => col.h.replace(/"/g, ''));
+  const values = sums.map(sum => count > 0 ? sum / count : 0);
   return { labels, values };
 }
 
 // Render or update Chart
-function renderChart() {
-  const dataset = datasets[currentDataset];
-  const { labels, values } = parseCSV(dataset.csv);
-  document.querySelector("h1").textContent = dataset.title;
-
+function renderChart(csv, title) {
+  const { labels, values } = parseCSV(csv);
+  document.querySelector("h1").textContent = title || "Paper Data";
   const ctx = document.getElementById("myChart").getContext("2d");
-
   if (myChart) {
-    // Update existing chart
     myChart.data.labels = labels;
     myChart.data.datasets[0].data = values;
     myChart.update();
   } else {
-    // Create new chart
     myChart = new Chart(ctx, {
       type: "bar",
       data: {
@@ -99,34 +80,68 @@ function renderChart() {
   }
 }
 
-// Load selected dataset
+// Load selected paper
 function loadDataset() {
-  currentDataset = document.getElementById("dataset").value;
-  renderChart();
+  const select = document.getElementById("dataset");
+  const idx = select.selectedIndex;
+  if (idx < 0 || !paperList[idx]) return;
+  const paper = paperList[idx];
+  currentPaperCode = paper.paper_code;
+  fetchCSVAndRender(paper.paper_code, paper.filename);
 }
 
-// Navigate between datasets
+function fetchCSVAndRender(paperCode, filename) {
+  fetch(`api/getData.php?paperCode=${encodeURIComponent(paperCode)}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.success && data.csv_content) {
+        renderChart(data.csv_content, `${paperCode}`);
+      } else {
+        renderChart('', 'No data');
+      }
+    })
+    .catch(() => renderChart('', 'Error loading data'));
+}
+
+// Navigate between papers
 function navigate(direction) {
-  const options = document.getElementById("dataset").options;
-  const currentIndex = Array.from(options).findIndex(
-    (opt) => opt.value === currentDataset
-  );
-  let newIndex = currentIndex + direction;
-
-  // Wrap around if at beginning or end
-  if (newIndex < 0) newIndex = options.length - 1;
-  if (newIndex >= options.length) newIndex = 0;
-
-  document.getElementById("dataset").selectedIndex = newIndex;
-  currentDataset = options[newIndex].value;
-  renderChart();
+  const select = document.getElementById("dataset");
+  let idx = select.selectedIndex;
+  if (idx === -1) idx = 0;
+  let newIndex = idx + direction;
+  if (newIndex < 0) newIndex = paperList.length - 1;
+  if (newIndex >= paperList.length) newIndex = 0;
+  select.selectedIndex = newIndex;
+  loadDataset();
 }
 
 function goBack() {
   window.location.href = "home.html";
 }
 
-// Initialize with first dataset
+// Fetch paper list and initialize
 document.addEventListener("DOMContentLoaded", () => {
-  renderChart();
+  fetch("api/getPaperList.php")
+    .then(r => r.json())
+    .then(list => {
+      if (!Array.isArray(list)) throw new Error();
+      paperList = list;
+      const select = document.getElementById("dataset");
+      select.innerHTML = '';
+      paperList.forEach((paper, i) => {
+        const opt = document.createElement('option');
+        opt.value = paper.paper_code;
+        opt.textContent = `${paper.paper_code} (${paper.filename})`;
+        select.appendChild(opt);
+      });
+      if (paperList.length > 0) {
+        select.selectedIndex = 0;
+        loadDataset();
+      } else {
+        renderChart('', 'No papers uploaded');
+      }
+    })
+    .catch(() => {
+      renderChart('', 'Error loading paper list');
+    });
 });
