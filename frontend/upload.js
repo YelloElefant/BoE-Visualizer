@@ -2,15 +2,16 @@ function goBack() {
   window.location.href = "home.html";
 }
 
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const csvInput = document.getElementById("csvInput");
+const browseButton = document.querySelector(".browse-button");
+const lineCountDisplay = document.querySelector(".line-count");
+const paperCodeInput = document.getElementById("paperCode");
+const modal = document.getElementById("uploadModal");
+const closeModal = document.querySelector(".close");
+
 document.addEventListener("DOMContentLoaded", function () {
-  const dropArea = document.getElementById("dropArea");
-  const fileInput = document.getElementById("fileInput");
-  const csvInput = document.getElementById("csvInput");
-  const browseButton = document.querySelector(".browse-button");
-  const lineCountDisplay = document.querySelector(".line-count");
-  const paperCodeInput = document.getElementById("paperCode");
-  const modal = document.getElementById("uploadModal");
-  const closeModal = document.querySelector(".close");
 
   // Prevent default drag behaviors
   ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
@@ -91,13 +92,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function updateLineCount() {
-    const lines = csvInput.value
-      .split("\n")
-      .filter((line) => line.trim() !== "");
-    lineCountDisplay.textContent = `Results: ${lines.length - 1}`;
-  }
 });
+
+function updateLineCount() {
+  const lines = csvInput.value
+    .split("\n")
+    .filter((line) => line.trim() !== "");
+  if (lines.length === 0) {
+    lineCountDisplay.textContent = "Results: 0";
+    return;
+  }
+  lineCountDisplay.textContent = `Results: ${lines.length - 1}`;
+}
 
 // Will upload to api
 async function submitCsv() {
@@ -125,10 +131,19 @@ async function submitCsv() {
       body: formData,
     });
 
-    if (response.ok) {
+    const responseData = await response.json();
+
+    if (response.ok && responseData.success) {
+      // Show success message with details
+      alert(`Upload successful!\nFile: ${responseData.filename}\nPaper Code: ${responseData.paper_code}\nLines processed: ${responseData.line_count}`);
       modal.style.display = "block";
+
+      // Clear the form
+      csvInput.value = "";
+      paperCodeInput.value = "";
+      updateLineCount();
     } else {
-      throw new Error("Upload failed");
+      throw new Error(responseData.error || "Upload failed");
     }
   } catch (error) {
     alert("Error during upload: " + error.message);
