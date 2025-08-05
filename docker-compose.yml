@@ -1,0 +1,10 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "374:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/default.conf
+      - ./frontend:/var/www/html
