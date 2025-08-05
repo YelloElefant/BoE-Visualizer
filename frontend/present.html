@@ -12,19 +12,25 @@
       <button class="back-button" onclick="goBack()">Back</button>
       <h1>Paper Title</h1>
 
-      <button
-        class="arrow-button arrow-left"
-        onclick="alert('Left button clicked!')"
-      >
+      <div class="dataset-selector">
+        <label for="dataset">Select Dataset:</label>
+        <select id="dataset" onchange="loadDataset()">
+          <option value="sample1">Sample Data 1</option>
+          <option value="sample2">Sample Data 2</option>
+          <option value="sample3">Sample Data 3</option>
+          <option value="sample4">Sample Data 4</option>
+        </select>
+      </div>
+
+      <button class="arrow-button arrow-left" onclick="navigate(-1)">
         &larr;
       </button>
 
-      <canvas id="myChart"></canvas>
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
 
-      <button
-        class="arrow-button arrow-right"
-        onclick="alert('Right button clicked!')"
-      >
+      <button class="arrow-button arrow-right" onclick="navigate(1)">
         &rarr;
       </button>
 
