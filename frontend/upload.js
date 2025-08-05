@@ -69,13 +69,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (files.length) {
       const file = files[0];
 
-      // Extract paper code from filename (assuming format like "ABC123_something.csv")
+      // Extract paper code from filename (format like "COMPX123-22A (HAM) Grades-20240814_0336-comma_separated")
       const fileName = file.name;
-      const codeMatch = fileName.match(/^([A-Za-z0-9]+)_?/);
+      const codeMatch = fileName.match(
+        /^([A-Za-z0-9]+-[0-9]+[A-Z]? \([\w]+\))/
+      ); // Matches COMPX123-22A (HAM)
       if (codeMatch && codeMatch[1]) {
         paperCodeInput.value = codeMatch[1];
       } else {
-        paperCodeInput.value = fileName.split(".")[0]; // Fallback to filename without extension
+        // Fallback - try to get everything before " Grades"
+        const fallbackMatch = fileName.split(" Grades")[0];
+        paperCodeInput.value = fallbackMatch || fileName.split(".")[0];
       }
 
       const reader = new FileReader();
@@ -91,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const lines = csvInput.value
       .split("\n")
       .filter((line) => line.trim() !== "");
-    lineCountDisplay.textContent = `Lines: ${lines.length}`;
+    lineCountDisplay.textContent = `Results: ${lines.length - 1}`;
   }
 });
 
