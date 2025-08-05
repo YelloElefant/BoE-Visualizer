@@ -1,5 +1,5 @@
 function goBack() {
-  window.history.back();
+  window.location.href = "home.html";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
