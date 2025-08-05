@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enter CSV Data</title>
+    <link rel="stylesheet" href="upload.css" />
+  </head>
+  <body>
+    <div class="container">
+      <button class="back-button" onclick="goBack()">Back</button>
+
+      <h1>Enter CSV Data</h1>
+      <textarea
+        id="csvInput"
+        rows="10"
+        cols="50"
+        placeholder="Enter CSV data (e.g., Category,Value\nA,30\nB,50...)"
+      ></textarea>
+      <br />
+      <button class="submit-button" onclick="submitCsv()">Submit</button>
+    </div>
+    <script src="upload.js"></script>
+  </body>
+</html>

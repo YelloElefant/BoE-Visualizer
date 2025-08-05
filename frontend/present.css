@@ -1,0 +1,102 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+.container {
+  position: relative;
+  text-align: center;
+  max-width: 90%;
+  max-height: 90vh;
+  width: 100%;
+  height: 80%;
+  padding: 20px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+}
+#myChart {
+  width: 80%;
+  height: 45vh;
+  max-width: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+}
+.arrow-button {
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.arrow-button:hover {
+  background-color: #0056b3;
+}
+.top-bottom-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -60px;
+}
+.bottom-buttons {
+  top: auto;
+  bottom: -60px;
+}
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+.arrow-left,
+.arrow-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.arrow-left {
+  left: 0;
+}
+
+.arrow-right {
+  right: 0;
+}
