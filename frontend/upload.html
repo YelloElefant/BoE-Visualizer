@@ -11,15 +11,48 @@
       <button class="back-button" onclick="goBack()">Back</button>
 
       <h1>Enter CSV Data</h1>
-      <textarea
-        id="csvInput"
-        rows="10"
-        cols="50"
-        placeholder="Enter CSV data (e.g., Category,Value\nA,30\nB,50...)"
-      ></textarea>
-      <br />
+
+      <div class="file-info">
+        <div class="paper-code-container">
+          <label for="paperCode">Paper Code:</label>
+          <input
+            type="text"
+            id="paperCode"
+            placeholder="Extracted from filename or enter manually"
+          />
+        </div>
+        <div class="line-count">Lines: 0</div>
+      </div>
+
+      <div id="dropArea" class="drop-area">
+        <div class="drop-content">
+          <p>Drag & drop your CSV file here</p>
+          <p>or</p>
+          <button class="browse-button">Browse Files</button>
+          <input
+            type="file"
+            id="fileInput"
+            accept=".csv"
+            style="display: none"
+          />
+        </div>
+        <textarea
+          id="csvInput"
+          rows="10"
+          placeholder="Or paste CSV data here (e.g., Category,Value\nA,30\nB,50...)"
+        ></textarea>
+      </div>
+
       <button class="submit-button" onclick="submitCsv()">Submit</button>
     </div>
+
+    <div id="uploadModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Upload accomplished successfully!</p>
+      </div>
+    </div>
+
     <script src="upload.js"></script>
   </body>
 </html>

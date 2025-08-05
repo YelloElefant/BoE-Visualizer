@@ -8,6 +8,7 @@ body {
   margin: 0;
   background-color: #f0f0f0;
 }
+
 .container {
   position: relative;
   text-align: center;
@@ -15,29 +16,101 @@ body {
   width: 100%;
   padding: 20px;
 }
+
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
-textarea {
+
+.file-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   max-width: 600px;
+  margin: 0 auto 15px;
+}
+
+.paper-code-container {
+  display: flex;
+  align-items: center;
+}
+
+.paper-code-container label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.paper-code-container input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+.line-count {
+  font-weight: bold;
+  color: #555;
+}
+
+.drop-area {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.drop-area.highlight {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.drop-content {
+  margin-bottom: 15px;
+}
+
+.browse-button {
+  font-size: 16px;
+  padding: 8px 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.browse-button:hover {
+  background-color: #0056b3;
+}
+
+textarea {
+  width: 100%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: vertical;
+  min-height: 150px;
+  box-sizing: border-box;
 }
+
 .submit-button {
   font-size: 16px;
   padding: 10px 20px;
-  margin-top: 10px;
+  margin-top: 20px;
   cursor: pointer;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
 }
+
 .submit-button:hover {
   background-color: #0056b3;
 }
@@ -55,6 +128,44 @@ textarea {
   cursor: pointer;
   z-index: 1000;
 }
+
 .back-button:hover {
   background-color: #5a6268;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
 }
