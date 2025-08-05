@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+// Will upload to api
 async function submitCsv() {
   const csvInput = document.getElementById("csvInput");
   const paperCodeInput = document.getElementById("paperCode");
