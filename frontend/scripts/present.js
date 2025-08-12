@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paperList.forEach((paper, i) => {
         const opt = document.createElement('option');
         opt.value = paper.paper_code;
-        opt.textContent = `${paper.paper_code} (${paper.filename})`;
+        opt.textContent = `${paper.paper_code}`;
         select.appendChild(opt);
       });
       if (paperList.length > 0) {
