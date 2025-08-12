@@ -12,13 +12,23 @@ function goBack() {
 async function loadPaperList() {
    try {
       const response = await fetch('api/getPaperList.php');
-      const papers = await response.json();
+      const data = await response.json();
 
       const select = document.getElementById('paperCodeSelect');
       const loadButton = document.getElementById('loadButton');
 
       // Clear existing options
       select.innerHTML = '';
+
+      // Check if response has the expected structure
+      if (!data.success || !Array.isArray(data.papers)) {
+         select.innerHTML = '<option value="">Error loading papers</option>';
+         loadButton.disabled = true;
+         console.error('Invalid response format:', data);
+         return;
+      }
+
+      const papers = data.papers;
 
       if (papers.length === 0) {
          select.innerHTML = '<option value="">No papers available</option>';

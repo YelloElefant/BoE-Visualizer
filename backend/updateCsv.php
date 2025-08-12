@@ -1,4 +1,6 @@
 <?php
+require_once 'db.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -13,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit();
 }
 
@@ -31,59 +33,33 @@ try {
         throw new Exception('Paper code is required');
     }
 
-    // Sanitize paper code for filename (same as upload.php)
-    $sanitizedPaperCode = preg_replace('/[^a-zA-Z0-9\-_()]/', '_', $paperCode);
+    $db = DB::getInstance();
     
-    // Define data directory
-    $dataDir = __DIR__ . '/../../data';
-    
-    if (!is_dir($dataDir)) {
-        throw new Exception('Data directory not found');
+    // Check if paper exists
+    if (!$db->paperExists($paperCode)) {
+        throw new Exception('Paper not found: ' . $paperCode . '. Please upload the paper first.');
     }
-
-    // Look for existing files with the matching paper code
-    $pattern = $dataDir . '/' . $sanitizedPaperCode . '_*.csv';
-    $existingFiles = glob($pattern);
-
-    if (empty($existingFiles)) {
-        throw new Exception('No existing file found for paper code: ' . $paperCode);
-    }
-
-    // Get the most recent file to update
-    sort($existingFiles);
-    $existingFile = end($existingFiles);
     
+    // Update CSV data in database (this will create backups automatically)
+    $result = $db->updatePaperData($paperCode, $csvData);
     
-
-    // Log the update
-    $logEntry = [
-        'timestamp' => date('c'),
-        'action' => 'update',
-        'paper_code' => $paperCode,
-        'filename' => basename($existingFile),
-        'file_size' => strlen($csvData),
-        'line_count' => count(array_filter(explode("\n", $csvData), function($line) {
-            return trim($line) !== '';
-        }))
-    ];
-
-    $logFile = $dataDir . '/update_log.json';
-    $existingLog = [];
-    if (file_exists($logFile)) {
-        $existingLog = json_decode(file_get_contents($logFile), true) ?: [];
-    }
-    $existingLog[] = $logEntry;
-    file_put_contents($logFile, json_encode($existingLog, JSON_PRETTY_PRINT));
+    // Count lines for response
+    $lines = array_filter(explode("\n", trim($csvData)), function($line) {
+        return trim($line) !== '';
+    });
 
     // Return success response
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => 'CSV file updated successfully',
-        'filename' => basename($existingFile),
+        'message' => 'Paper data updated successfully',
         'paper_code' => $paperCode,
         'timestamp' => date('Y-m-d_H-i-s'),
-        'line_count' => $logEntry['line_count']
+        'line_count' => count($lines),
+        'upload_id' => $result['upload_id'],
+        'records_imported' => $result['records_imported'],
+        'records_updated' => $result['records_updated'],
+        'total_processed' => $result['total_processed']
     ]);
 
 } catch (Exception $e) {

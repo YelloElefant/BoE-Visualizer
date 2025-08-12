@@ -1,4 +1,6 @@
 <?php
+require_once 'db.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -13,32 +15,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Only allow GET requests
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit();
 }
 
-
-// Scan data directory for CSV files
-$dataDir = __DIR__ . '/../../data';
-if (!is_dir($dataDir)) {
-    echo json_encode([]);
-    exit();
-}
-
-$files = glob($dataDir . '/*.csv');
-$result = [];
-foreach ($files as $file) {
-    $filename = basename($file);
-    // Extract paper code from filename: e.g. COMPX123-22A_(HAM)_2025-08-05_12-01-48.csv
-    if (preg_match('/^(.+?)_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.csv$/', $filename, $matches)) {
-        $paper_code = str_replace('_', ' ', $matches[1]);
-        $paper_code = preg_replace('/\s*\(\s*/', ' (', $paper_code); // fix space before (
-        $paper_code = preg_replace('/\s+/', ' ', $paper_code); // collapse spaces
+try {
+    $db = DB::getInstance();
+    
+    // Get list of papers with summary statistics from database
+    $papers = $db->getPaperList();
+    
+    // Transform data for frontend compatibility
+    $result = [];
+    foreach ($papers as $paper) {
         $result[] = [
-            'paper_code' => $paper_code,
-            'filename' => $filename
+            'paper_code' => $paper['paper_code'],
+            'paper_name' => $paper['paper_name'],
+            'semester' => $paper['semester'],
+            'year' => $paper['year'],
+            'location' => $paper['location'],
+            'total_submissions' => $paper['total_submissions'],
+            'average_score' => $paper['average_score'],
+            'created_at' => $paper['created_at'],
+            'updated_at' => $paper['updated_at']
         ];
     }
+    
+    // Return the paper list
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'papers' => $result
+    ]);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Failed to retrieve paper list: ' . $e->getMessage()
+    ]);
+} catch (Error $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Internal server error: ' . $e->getMessage()
+    ]);
 }
-echo json_encode($result);
-exit();
+?>

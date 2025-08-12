@@ -1,4 +1,6 @@
 <?php
+require_once 'db.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -38,52 +40,40 @@ try {
         throw new Exception('Paper code is required. Use ?paperCode=VALUE or ?VALUE format');
     }
 
-    // Sanitize paper code for filename (same as upload.php)
-    $sanitizedPaperCode = preg_replace('/[^a-zA-Z0-9\-_()]/', '_', $paperCode);
+    $db = DB::getInstance();
     
-    // Define data directory
-    $dataDir = __DIR__ . '/../../data';
+    // Get paper data from database
+    $result = $db->getPaperData($paperCode);
     
-    if (!is_dir($dataDir)) {
-        throw new Exception('Data directory not found');
-    }
-
-    // Look for files with the matching paper code
-    $pattern = $dataDir . '/' . $sanitizedPaperCode . '_*.csv';
-    $matchingFiles = glob($pattern);
-
-    if (empty($matchingFiles)) {
+    if (!$result) {
         throw new Exception('No data found for paper code: ' . $paperCode);
     }
 
-    // Get the most recent file (last in array after sorting)
-    sort($matchingFiles);
-    $csvFile = end($matchingFiles);
-    
-    // Read the CSV file
-    $csvContent = file_get_contents($csvFile);
-    
-    if ($csvContent === false) {
-        throw new Exception('Failed to read CSV file');
-    }
+    // Count lines in CSV content
+    $lines = array_filter(explode("\n", trim($result['csv_content'])), function($line) {
+        return trim($line) !== '';
+    });
 
-    // Get file info
-    $filename = basename($csvFile);
-    $fileSize = filesize($csvFile);
-    $lastModified = date('c', filemtime($csvFile));
-
-    // Return success response with CSV content
+    // Return success response with CSV content and statistics
     http_response_code(200);
     echo json_encode([
         'success' => true,
         'paper_code' => $paperCode,
-        'filename' => $filename,
-        'csv_content' => $csvContent,
-        'file_size' => $fileSize,
-        'last_modified' => $lastModified,
-        'line_count' => count(array_filter(explode("\n", $csvContent), function($line) {
-            return trim($line) !== '';
-        }))
+        'paper_name' => $result['paper']['paper_name'],
+        'semester' => $result['paper']['semester'],
+        'year' => $result['paper']['year'],
+        'location' => $result['paper']['location'],
+        'csv_content' => $result['csv_content'],
+        'line_count' => count($lines),
+        'last_modified' => $result['paper']['updated_at'],
+        'statistics' => [
+            'total_students' => $result['statistics']['total_students'] ?? 0,
+            'average_score' => $result['statistics']['average_score'] ?? null,
+            'highest_score' => $result['statistics']['highest_score'] ?? null,
+            'lowest_score' => $result['statistics']['lowest_score'] ?? null,
+            'pass_rate' => $result['statistics']['pass_rate'] ?? null,
+            'grade_distribution' => $result['statistics']['grade_distribution'] ?? []
+        ]
     ]);
 
 } catch (Exception $e) {

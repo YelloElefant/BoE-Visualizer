@@ -26,6 +26,13 @@
         </select>
       </div>
 
+      <div class="chart-type-selector">
+        <label>Chart Type:</label>
+        <button onclick="switchChartType('scoreDistribution')" class="chart-type-btn active" id="scoreDistribution-btn">Score Distribution</button>
+        <button onclick="switchChartType('gradeDistribution')" class="chart-type-btn" id="gradeDistribution-btn">Grade Distribution</button>
+        <button onclick="switchChartType('statistics')" class="chart-type-btn" id="statistics-btn">Statistics</button>
+      </div>
+
       <button class="arrow-button arrow-left" onclick="navigate(-1)">
         &larr;
       </button>

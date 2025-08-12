@@ -8,6 +8,7 @@ body {
   margin: 0;
   background-color: #f0f0f0;
 }
+
 .container {
   position: relative;
   text-align: center;
@@ -19,6 +20,7 @@ body {
   padding-bottom: 80px;
   box-sizing: border-box;
 }
+
 #myChart {
   width: 80%;
   height: 60vh;
@@ -38,6 +40,7 @@ h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
+
 .button-container {
   display: flex;
   justify-content: space-between;
@@ -47,6 +50,7 @@ h1 {
   max-width: 800px;
   margin: 20px auto;
 }
+
 .arrow-button {
   font-size: 18px;
   padding: 10px 20px;
@@ -56,9 +60,11 @@ h1 {
   border: none;
   border-radius: 5px;
 }
+
 .arrow-button:hover {
   background-color: #0056b3;
 }
+
 .top-bottom-buttons {
   display: flex;
   justify-content: center;
@@ -71,10 +77,12 @@ h1 {
   transform: translateX(-50%);
   top: -60px;
 }
+
 .bottom-buttons {
   top: auto;
   bottom: -60px;
 }
+
 .back-button {
   position: fixed;
   top: 10px;
@@ -88,6 +96,7 @@ h1 {
   cursor: pointer;
   z-index: 1000;
 }
+
 .back-button:hover {
   background-color: #5a6268;
 }
@@ -110,14 +119,45 @@ h1 {
 
 .dataset-selector {
   margin: 20px 0;
+}
+
+.dataset-selector label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.chart-type-selector {
+  margin: 20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.dataset-selector label {
+.chart-type-selector label {
   font-weight: bold;
+  margin-right: 15px;
+}
+
+.chart-type-btn {
+  padding: 8px 16px;
+  border: 2px solid #007bff;
+  background-color: #f8f9fa;
+  color: #007bff;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.chart-type-btn:hover {
+  background-color: #e9ecef;
+}
+
+.chart-type-btn.active {
+  background-color: #007bff;
+  color: white;
 }
 
 .dataset-selector select {
