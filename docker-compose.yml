@@ -4,13 +4,16 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     ports:
-      - "374:80"
+      - "${NGINX_PORT}:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/default.conf
       - ./frontend:/var/www/html
       - ./backend:/var/www/html/api
     networks:
-      - internal
+      - ${NETWORK_NAME}
+    depends_on:
+      - php
+      - postgres
 
   php:
     build:
@@ -21,8 +24,51 @@ services:
       - ./backend:/var/www/html/api
       - ./data:/var/www/data 
     networks:
-      - internal
+      - ${NETWORK_NAME}
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${POSTGRES_VOLUME}:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ${NETWORK_NAME}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ${PGADMIN_CONTAINER_NAME}
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
+    volumes:
+      - ${PGADMIN_VOLUME}:/var/lib/pgadmin
+    networks:
+      - ${NETWORK_NAME}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - postgres
+
+
 
 networks:
   internal:
-    driver: bridge
+    driver: ${NETWORK_DRIVER}
