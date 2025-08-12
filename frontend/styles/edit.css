@@ -52,13 +52,24 @@ h1 {
    min-width: 100px;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
    flex: 1;
    padding: 10px;
    border: 1px solid #ddd;
    border-radius: 4px;
    font-size: 14px;
    min-width: 300px;
+}
+
+.paper-select {
+   background-color: white;
+   cursor: pointer;
+}
+
+.paper-select:disabled {
+   background-color: #f8f9fa;
+   cursor: not-allowed;
 }
 
 .load-button {
@@ -71,8 +82,29 @@ h1 {
    font-size: 14px;
 }
 
-.load-button:hover {
+.load-button:hover:not(:disabled) {
    background-color: #0056b3;
+}
+
+.load-button:disabled {
+   background-color: #6c757d;
+   cursor: not-allowed;
+   opacity: 0.6;
+}
+
+.refresh-button {
+   padding: 10px 12px;
+   background-color: #28a745;
+   color: white;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-size: 16px;
+   font-weight: bold;
+}
+
+.refresh-button:hover {
+   background-color: #218838;
 }
 
 /* Editor Section */

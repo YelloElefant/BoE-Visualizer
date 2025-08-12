@@ -2,18 +2,78 @@
 
 let currentCsvData = [];
 let currentPaperCode = '';
+let availablePapers = [];
 
 function goBack() {
    window.location.href = "home.html";
 }
 
+// Load available papers from backend
+async function loadPaperList() {
+   try {
+      const response = await fetch('api/getPaperList.php');
+      const papers = await response.json();
+
+      const select = document.getElementById('paperCodeSelect');
+      const loadButton = document.getElementById('loadButton');
+
+      // Clear existing options
+      select.innerHTML = '';
+
+      if (papers.length === 0) {
+         select.innerHTML = '<option value="">No papers available</option>';
+         loadButton.disabled = true;
+         return;
+      }
+
+      // Add default option
+      select.innerHTML = '<option value="">Select a paper...</option>';
+
+      // Remove duplicates by paper_code
+      const uniquePapers = [];
+      const seen = new Set();
+
+      for (const paper of papers) {
+         if (!seen.has(paper.paper_code)) {
+            seen.add(paper.paper_code);
+            uniquePapers.push(paper);
+         }
+      }
+
+      // Sort papers alphabetically
+      uniquePapers.sort((a, b) => a.paper_code.localeCompare(b.paper_code));
+
+      // Add paper options
+      uniquePapers.forEach(paper => {
+         const option = document.createElement('option');
+         option.value = paper.paper_code;
+         option.textContent = paper.paper_code;
+         select.appendChild(option);
+      });
+
+      availablePapers = uniquePapers;
+      loadButton.disabled = false;
+
+      // Enable load button when a paper is selected
+      select.addEventListener('change', function () {
+         loadButton.disabled = !this.value;
+      });
+
+   } catch (error) {
+      console.error('Error loading paper list:', error);
+      const select = document.getElementById('paperCodeSelect');
+      select.innerHTML = '<option value="">Error loading papers</option>';
+      document.getElementById('loadButton').disabled = true;
+   }
+}
+
 // Load CSV data from backend
 async function loadCsvData() {
-   const paperCodeInput = document.getElementById('paperCodeInput');
-   const paperCode = paperCodeInput.value.trim();
+   const paperCodeSelect = document.getElementById('paperCodeSelect');
+   const paperCode = paperCodeSelect.value.trim();
 
    if (!paperCode) {
-      showError('Please enter a paper code');
+      showError('Please select a paper code');
       return;
    }
 
@@ -280,14 +340,24 @@ function hideSuccessModal() {
    document.getElementById('successModal').style.display = 'none';
 }
 
-// Handle URL parameters for direct loading
-document.addEventListener('DOMContentLoaded', function () {
+// Handle URL parameters for direct loading and initialize page
+document.addEventListener('DOMContentLoaded', async function () {
+   // Load the paper list first
+   await loadPaperList();
+
+   // Check URL parameters for direct loading
    const urlParams = new URLSearchParams(window.location.search);
    const paperCode = urlParams.get('paperCode');
 
    if (paperCode) {
-      document.getElementById('paperCodeInput').value = paperCode;
-      loadCsvData();
+      const select = document.getElementById('paperCodeSelect');
+      select.value = paperCode;
+
+      // Enable load button if paper exists in dropdown
+      if (select.value === paperCode) {
+         document.getElementById('loadButton').disabled = false;
+         loadCsvData();
+      }
    }
 });
 

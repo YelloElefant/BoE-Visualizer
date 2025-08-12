@@ -21,9 +21,12 @@
       
       <div class="load-section">
          <div class="input-group">
-            <label for="paperCodeInput">Paper Code:</label>
-            <input type="text" id="paperCodeInput" placeholder="Enter paper code (e.g., COMPX123-22A (HAM))" />
-            <button onclick="loadCsvData()" class="load-button">Load CSV</button>
+            <label for="paperCodeSelect">Paper Code:</label>
+            <select id="paperCodeSelect" class="paper-select">
+               <option value="">Loading papers...</option>
+            </select>
+            <button onclick="loadPaperList()" class="refresh-button" title="Refresh paper list">↻</button>
+            <button onclick="loadCsvData()" class="load-button" id="loadButton" disabled>Load CSV</button>
          </div>
       </div>
 
