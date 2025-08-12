@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BOE Visualiser</title>
-    <link rel="stylesheet" href="present.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/present.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
@@ -12,19 +16,25 @@
       <button class="back-button" onclick="goBack()">Back</button>
       <h1>Paper Title</h1>
 
-      <button
-        class="arrow-button arrow-left"
-        onclick="alert('Left button clicked!')"
-      >
+      <div class="dataset-selector">
+        <label for="dataset">Select Dataset:</label>
+        <select id="dataset" onchange="loadDataset()">
+          <option value="sample1">Sample Data 1</option>
+          <option value="sample2">Sample Data 2</option>
+          <option value="sample3">Sample Data 3</option>
+          <option value="sample4">Sample Data 4</option>
+        </select>
+      </div>
+
+      <button class="arrow-button arrow-left" onclick="navigate(-1)">
         &larr;
       </button>
 
-      <canvas id="myChart"></canvas>
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
 
-      <button
-        class="arrow-button arrow-right"
-        onclick="alert('Right button clicked!')"
-      >
+      <button class="arrow-button arrow-right" onclick="navigate(1)">
         &rarr;
       </button>
 
@@ -39,6 +49,6 @@
         </button>
       </div>
     </div>
-    <script src="present.js"></script>
+    <script src="scripts/present.js"></script>
   </body>
 </html>

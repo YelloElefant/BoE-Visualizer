@@ -15,16 +15,23 @@ body {
   max-height: 90vh;
   width: 100%;
   height: 80%;
-  padding: 20px;
+  padding: 5px;
   padding-bottom: 80px;
   box-sizing: border-box;
 }
 #myChart {
   width: 80%;
-  height: 45vh;
+  height: 60vh;
   max-width: 100%;
   margin: 0 auto;
   display: block;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  margin: 0 auto;
 }
 
 h1 {
@@ -99,4 +106,30 @@ h1 {
 
 .arrow-right {
   right: 0;
+}
+
+.dataset-selector {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dataset-selector label {
+  font-weight: bold;
+}
+
+.dataset-selector select {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+}
+
+.dataset-selector select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
