@@ -4,46 +4,86 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enter CSV Data</title>
-    <link rel="stylesheet" href="upload.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/upload.css" />
+
   </head>
   <body>
     <div class="container">
       <button class="back-button" onclick="goBack()">Back</button>
 
-      <h1>Enter CSV Data</h1>
+      <!-- Initial Upload Section -->
+      <div id="uploadSection">
+        <h1>Enter CSV Data</h1>
 
-      <div class="file-info">
-        <div class="paper-code-container">
-          <label for="paperCode">Paper Code:</label>
-          <input
-            type="text"
-            id="paperCode"
-            placeholder="Extracted from filename"
-          />
+        <div class="file-info">
+          <div class="paper-code-container">
+            <label for="paperCode">Paper Code:</label>
+            <input
+              type="text"
+              id="paperCode"
+              placeholder="Extracted from filename"
+            />
+          </div>
+          <div class="line-count">Results: 0</div>
         </div>
-        <div class="line-count">Results: 0</div>
+
+        <div id="dropArea" class="drop-area">
+          <div class="drop-content">
+            <p>Drag & drop your CSV file here</p>
+            <p>or</p>
+            <button class="browse-button">Browse Files</button>
+            <input
+              type="file"
+              id="fileInput"
+              accept=".csv"
+              style="display: none"
+            />
+          </div>
+          <textarea
+            id="csvInput"
+            rows="10"
+            placeholder="Or paste CSV data here (e.g., Category,Value\nA,30\nB,50...)"
+          ></textarea>
+        </div>
+
+        <button
+          id="initialSubmit"
+          class="submit-button"
+          onclick="previewData()"
+        >
+          Preview Data
+        </button>
       </div>
 
-      <div id="dropArea" class="drop-area">
-        <div class="drop-content">
-          <p>Drag & drop your CSV file here</p>
-          <p>or</p>
-          <button class="browse-button">Browse Files</button>
-          <input
-            type="file"
-            id="fileInput"
-            accept=".csv"
-            style="display: none"
-          />
+      <!-- Preview Section (initially hidden) -->
+      <div id="previewSection" class="preview-section" style="display: none">
+        <div class="preview-header">
+          <h2>Data Preview - <span id="previewPaperCode"></span></h2>
+          <button class="back-to-edit" onclick="backToEdit()">
+            &#x270E; Edit Data
+          </button>
         </div>
-        <textarea
-          id="csvInput"
-          rows="10"
-          placeholder="Or paste CSV data here (e.g., Category,Value\nA,30\nB,50...)"
-        ></textarea>
-      </div>
 
-      <button class="submit-button" onclick="submitCsv()">Submit</button>
+        <div class="table-container">
+          <table id="previewTable">
+            <thead>
+              <tr id="headerRow"></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="preview-footer">
+          <div class="row-count">Rows: <span id="rowCount">0</span></div>
+          <button class="submit-button" onclick="submitCsv()">
+            Confirm and Upload
+          </button>
+        </div>
+      </div>
     </div>
 
     <div id="uploadModal" class="modal">
@@ -53,6 +93,6 @@
       </div>
     </div>
 
-    <script src="upload.js?dsfogijsdfgjsdfogijsdfgosdifjgdsfoigj"></script>
+    <script src="scripts/upload.js"></script>
   </body>
 </html>
