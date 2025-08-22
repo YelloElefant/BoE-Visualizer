@@ -89,6 +89,11 @@ function parseStatistics(data) {
   return { labels, values };
 }
 
+function getShowGrid() {
+  const v = localStorage.getItem('boe.showGrid');
+  return v === null ? true : v === 'true';
+}
+
 // Render or update Chart
 function renderChart(data, title) {
   const { labels, values } = parseData(data, chartType);
@@ -149,24 +154,20 @@ function renderChart(data, title) {
     }
   };
 
-  // Add specific options for bar charts
   if (chartTypeConfig === 'bar') {
-    config.options.scales = {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: getYAxisLabel()
-        }
-      },
-      x: {
-        title: {
-          display: true,
-          text: getXAxisLabel()
-        }
-      }
-    };
-  }
+  const showGrid = getShowGrid();
+  config.options.scales = {
+    y: {
+      beginAtZero: true,
+      grid: { display: showGrid },
+      title: { display: true, text: getYAxisLabel() }
+    },
+    x: {
+      grid: { display: showGrid },
+      title: { display: true, text: getXAxisLabel() }
+    }
+  };
+}
 
   myChart = new Chart(ctx, config);
 }
